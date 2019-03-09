@@ -3,17 +3,17 @@
 #include <BreakoutSDK.h>
 #include <board.h>
 #include<stdio.h>
-#include <DHT.h>
+#include "DHT.h"
 
-static const char *device_purpose = "monitor plants";
+static const char *device_purpose = "monitor plants temp and c";
 
-static const char *psk_key ="your key here";
+static const char *psk_key ="key";
 
 Breakout *breakout = &Breakout::getInstance();
 
 #define SENSOR_PIN (D38)
 #define LOOP_INTERVAL (1 * 1000)
-#define SEND_INTERVAL (10 * 60 * 1000)
+#define SEND_INTERVAL (1 * 60 * 1000)
 #define DHTTYPE DHT11   // DHT 11 
 
 DHT dht(SENSOR_PIN, DHTTYPE);
@@ -64,5 +64,22 @@ void sendCommand(const char * command) {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  static unsigned long last_send = 0;
+
+  if ((last_send == 0) || (millis() - last_send >= SEND_INTERVAL)) {
+    last_send = millis();
+
+    float temperature = dht.readTemperature();
+    float humidity = dht.readHumidity();
   
+    LOG(L_INFO, "Current temperature [%f] degrees celcius\r\n", temperature);
+    LOG(L_INFO, "Current humidity [%f]\r\n", humidity);
+    char commandText[512];
+    snprintf(commandText, 512, "Current humidity [%4.2f] g/m3 and current temp [%4.2f] Celsius", humidity, temperature);
+    sendCommand(commandText);
+  }
+
+  breakout->spin();
+
+  delay(LOOP_INTERVAL);
 }
