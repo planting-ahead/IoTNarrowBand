@@ -7,7 +7,7 @@
 
 static const char *device_purpose = "monitor plants temp and c";
 
-static const char *psk_key ="key";
+static const char *psk_key ="5ecd7140f753e08b018ef1bac82849f6";
 
 Breakout *breakout = &Breakout::getInstance();
 
@@ -71,11 +71,12 @@ void loop() {
 
     float temperature = dht.readTemperature();
     float humidity = dht.readHumidity();
+    
   
     LOG(L_INFO, "Current temperature [%f] degrees celcius\r\n", temperature);
     LOG(L_INFO, "Current humidity [%f]\r\n", humidity);
     char commandText[512];
-    snprintf(commandText, 512, "Current humidity [%4.2f] g/m3 and current temp [%4.2f] Celsius", humidity, temperature);
+    snprintf(commandText, 512, "{Humidity:%4.2f, Temperature:%4.2f}", humidity, temperature);
     sendCommand(commandText);
   }
 
