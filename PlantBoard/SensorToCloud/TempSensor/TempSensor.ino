@@ -7,7 +7,7 @@
 
 static const char *device_purpose = "monitor plants temp and c";
 
-static const char *psk_key ="5ecd7140f753e08b018ef1bac82849f6";
+static const char *psk_key ="key goes here";
 
 Breakout *breakout = &Breakout::getInstance();
 
